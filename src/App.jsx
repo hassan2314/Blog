@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
 import authService from "./appwrite/auth.js";
 import { login, logout } from "./store/authSlice.js";
 import { Header, Footer, LoadingSpinner } from "./components/index.js";
@@ -89,6 +90,7 @@ function App() {
       </main>
 
       <Footer />
+      <Toaster position="top-right" />
     </div>
   );
 }

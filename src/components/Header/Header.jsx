@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { LogoutButton, Container, Logo } from "../index.js";
+import { LogoutButton, Container, Logo, SearchBar, NotificationCenter } from "../index.js";
 import { useNavigate } from "react-router-dom";
+import { FiUser } from 'react-icons/fi';
 
 const Header = () => {
   const authStatus = useSelector((state) => state.auth.status);
@@ -117,7 +118,7 @@ const Header = () => {
       <Container>
         <nav className="flex items-center justify-between py-3">
           {/* Logo/Branding */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-1">
             <Link to="/" className="flex items-center">
               <Logo
                 width="70px"
@@ -129,6 +130,11 @@ const Header = () => {
                 </span>
               )}
             </Link>
+            
+            {/* Search Bar */}
+            <div className="ml-8 flex-1 max-w-md hidden sm:block">
+              <SearchBar />
+            </div>
           </div>
 
           {/* Navigation Items */}
@@ -161,11 +167,26 @@ const Header = () => {
 
               {/* User dropdown/logout */}
               {authStatus && (
-                <li className="ml-2">
-                  <div className="relative">
-                    <LogoutButton className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200" />{" "}
-                  </div>
-                </li>
+                <>
+                  <li>
+                    <NotificationCenter />
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => navigate(`/profile/${userData.$id}`)}
+                      className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors"
+                      title="View Profile"
+                    >
+                      <FiUser className="w-5 h-5" />
+                      <span className="hidden sm:inline ml-2">Profile</span>
+                    </button>
+                  </li>
+                  <li className="ml-2">
+                    <div className="relative">
+                      <LogoutButton className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200" />
+                    </div>
+                  </li>
+                </>
               )}
             </ul>
           </div>

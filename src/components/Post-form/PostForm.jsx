@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Input, Button, Select, RTE, LoadingSpinner } from "../index.js";
+import { Input, Button, Select, RTE, LoadingSpinner, CategorySelector, TagSelector } from "../index.js";
 import { useForm } from "react-hook-form";
 import appwriteServices from "../../appwrite/config.js";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +31,8 @@ export default function PostForm({ post }) {
       : null
   );
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState(post?.categories || []);
+  const [selectedTags, setSelectedTags] = useState(post?.tags || []);
 
   const slugTransform = useCallback((value) => {
     if (value && typeof value === "string") {
@@ -83,6 +85,8 @@ export default function PostForm({ post }) {
         const dbPost = await appwriteServices.updatePost(post.$id, {
           ...data,
           featuredimage: fileId,
+          categories: selectedCategories,
+          tags: selectedTags,
         });
 
         if (dbPost) {
@@ -99,6 +103,8 @@ export default function PostForm({ post }) {
           ...data,
           featuredimage: file.$id,
           userId: userData.$id,
+          categories: selectedCategories,
+          tags: selectedTags,
         });
 
         if (dbPost) {
@@ -217,6 +223,22 @@ export default function PostForm({ post }) {
               />
             </div>
           )}
+        </div>
+
+        {/* Categories */}
+        <div>
+          <CategorySelector
+            selectedCategories={selectedCategories}
+            onCategoriesChange={setSelectedCategories}
+          />
+        </div>
+
+        {/* Tags */}
+        <div>
+          <TagSelector
+            selectedTags={selectedTags}
+            onTagsChange={setSelectedTags}
+          />
         </div>
 
         <div>

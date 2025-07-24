@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import appwriteService from "../appwrite/config";
-import { Button, Container, LoadingSpinner } from "../components";
+import { Button, Container, LoadingSpinner, CommentsList, SocialShare } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
-import { ConfirmDialog } from "../components"; // You'll need to create this
+import { ConfirmDialog } from "../components";
+import { FiEye, FiCalendar, FiUser } from 'react-icons/fi';
+import { formatDistanceToNow } from 'date-fns';
 
 export default function Post() {
   const [post, setPost] = useState(null);
@@ -33,6 +35,9 @@ export default function Post() {
         }
 
         setPost(postData);
+        
+        // Increment view count
+        appwriteService.incrementViewCount(slug);
       } catch (error) {
         console.error("Error loading post:", error);
         setError(error.message);
@@ -167,17 +172,66 @@ export default function Post() {
           {/* Post Content */}
           <div className="p-8">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
                 {post.title}
               </h1>
-              <div className="flex items-center text-gray-500 text-sm">
-                <span>Posted by {post.username || "Anonymous"}</span>
-                <span className="mx-2">•</span>
-                <span>{new Date(post.$createdAt).toLocaleDateString()}</span>
+              
+              {/* Post Meta */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4 text-gray-500 text-sm">
+                  <div className="flex items-center space-x-1">
+                    <FiUser className="w-4 h-4" />
+                    <span>Posted by {post.username || "Anonymous"}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <FiCalendar className="w-4 h-4" />
+                    <span>{formatDistanceToNow(new Date(post.$createdAt), { addSuffix: true })}</span>
+                  </div>
+                  {post.viewCount && (
+                    <div className="flex items-center space-x-1">
+                      <FiEye className="w-4 h-4" />
+                      <span>{post.viewCount} views</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Social Share */}
+                <SocialShare
+                  url={window.location.href}
+                  title={post.title}
+                  description={post.content.replace(/<[^>]*>/g, '').substring(0, 150)}
+                />
               </div>
+              
+              {/* Categories and Tags */}
+              {(post.categories?.length > 0 || post.tags?.length > 0) && (
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {post.categories?.map((categoryId) => (
+                    <span
+                      key={categoryId}
+                      className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm rounded-full"
+                    >
+                      Category
+                    </span>
+                  ))}
+                  {post.tags?.map((tagId) => (
+                    <span
+                      key={tagId}
+                      className="px-3 py-1 bg-gray-100 text-gray-800 text-sm rounded-full"
+                    >
+                      #Tag
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="prose max-w-none">{parse(post.content)}</div>
+            <div className="prose max-w-none mb-12">{parse(post.content)}</div>
+            
+            {/* Comments Section */}
+            <div className="border-t border-gray-200 pt-8">
+              <CommentsList postId={post.$id} postData={post} />
+            </div>
           </div>
         </div>
 
