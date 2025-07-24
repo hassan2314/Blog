@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiX, FiTag } from 'react-icons/fi';
+import { FiPlus, FiX, FiTag, FiAlertCircle } from 'react-icons/fi';
 import { Button } from '../index';
 import appwriteService from '../../appwrite/config';
 import toast from 'react-hot-toast';
@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 export default function CategorySelector({ selectedCategories = [], onCategoriesChange }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newCategory, setNewCategory] = useState({
     name: '',
@@ -21,12 +22,18 @@ export default function CategorySelector({ selectedCategories = [], onCategories
   const fetchCategories = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await appwriteService.getCategories();
       if (response && response.documents) {
         setCategories(response.documents);
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
+      if (error.code === 404) {
+        setError('Categories collection not found. Please create the categories collection in your Appwrite database.');
+      } else {
+        setError('Failed to load categories. Please check your database configuration.');
+      }
     } finally {
       setLoading(false);
     }
@@ -62,12 +69,18 @@ export default function CategorySelector({ selectedCategories = [], onCategories
         setNewCategory({ name: '', description: '', color: '#3B82F6' });
         setShowAddForm(false);
         toast.success('Category created successfully!');
+        // Clear any previous errors
+        setError(null);
       } else {
         toast.error('Failed to create category');
       }
     } catch (error) {
       console.error('Error creating category:', error);
-      toast.error('Failed to create category');
+      if (error.code === 404) {
+        toast.error('Categories collection not found. Please create the collection first.');
+      } else {
+        toast.error('Failed to create category');
+      }
     }
   };
 
@@ -85,6 +98,34 @@ export default function CategorySelector({ selectedCategories = [], onCategories
         <div className="animate-pulse space-y-2">
           <div className="h-8 bg-gray-200 rounded"></div>
           <div className="h-8 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center space-x-2">
+          <FiTag className="w-5 h-5 text-gray-600" />
+          <span className="font-medium text-gray-900">Categories</span>
+        </div>
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <FiAlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-sm font-medium text-yellow-800">Collection Setup Required</h3>
+              <p className="text-sm text-yellow-700 mt-1">{error}</p>
+              <div className="mt-3">
+                <button
+                  onClick={fetchCategories}
+                  className="text-sm text-yellow-800 hover:text-yellow-900 font-medium"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

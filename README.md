@@ -64,7 +64,12 @@ A modern, feature-rich blog platform built with React, Vite, and Appwrite. This 
    ```
 
 4. **Set up Appwrite Collections**
-   Create the following collections in your Appwrite database:
+   
+   ⚠️ **Important**: You need to create several new collections in your Appwrite database for the enhanced features to work.
+   
+   📖 **Please follow the detailed setup guide**: [APPWRITE_SETUP.md](APPWRITE_SETUP.md)
+   
+   Quick reference - create the following collections in your Appwrite database:
 
    **Posts Collection** (existing - enhanced):
    ```json
