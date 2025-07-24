@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
-import { FiSearch, FiFilter, FiTag, FiCalendar } from 'react-icons/fi';
-import { Container, PostCard, LoadingSpinner, SearchBar } from '../components';
-import appwriteService from '../appwrite/config';
-import Fuse from 'fuse.js';
+import React, { useState, useEffect } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { FiSearch, FiFilter, FiTag, FiCalendar } from "react-icons/fi";
+import { Container, PostCard, LoadingSpinner, SearchBar } from "../components";
+import appwriteService from "../appwrite/config";
+import Fuse from "fuse.js";
 
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
@@ -13,12 +13,12 @@ export default function SearchResults() {
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    category: '',
-    tag: '',
-    dateRange: '',
+    category: "",
+    tag: "",
+    dateRange: "",
   });
 
-  const query = searchParams.get('q') || '';
+  const query = searchParams.get("q") || "";
 
   useEffect(() => {
     fetchData();
@@ -33,11 +33,12 @@ export default function SearchResults() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [postsResponse, categoriesResponse, tagsResponse] = await Promise.all([
-        appwriteService.getPosts(),
-        appwriteService.getCategories(),
-        appwriteService.getTags(),
-      ]);
+      const [postsResponse, categoriesResponse, tagsResponse] =
+        await Promise.all([
+          appwriteService.getPosts(),
+          appwriteService.getCategories(),
+          appwriteService.getTags(),
+        ]);
 
       if (postsResponse && postsResponse.documents) {
         setPosts(postsResponse.documents);
@@ -49,7 +50,7 @@ export default function SearchResults() {
         setTags(tagsResponse.documents);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
@@ -61,39 +62,39 @@ export default function SearchResults() {
     // Text search using Fuse.js
     if (query.trim()) {
       const fuse = new Fuse(posts, {
-        keys: ['title', 'content'],
+        keys: ["title", "content"],
         threshold: 0.4,
         includeScore: true,
       });
       const searchResults = fuse.search(query);
-      results = searchResults.map(result => result.item);
+      results = searchResults.map((result) => result.item);
     }
 
     // Apply filters
     if (filters.category) {
-      results = results.filter(post => 
-        post.categories && post.categories.includes(filters.category)
+      results = results.filter(
+        (post) => post.categories && post.categories.includes(filters.category)
       );
     }
 
     if (filters.tag) {
-      results = results.filter(post => 
-        post.tags && post.tags.includes(filters.tag)
+      results = results.filter(
+        (post) => post.tags && post.tags.includes(filters.tag)
       );
     }
 
     if (filters.dateRange) {
       const now = new Date();
-      const filterDate = new Date();
-      
+      let filterDate = new Date();
+
       switch (filters.dateRange) {
-        case 'week':
+        case "week":
           filterDate.setDate(now.getDate() - 7);
           break;
-        case 'month':
+        case "month":
           filterDate.setMonth(now.getMonth() - 1);
           break;
-        case 'year':
+        case "year":
           filterDate.setFullYear(now.getFullYear() - 1);
           break;
         default:
@@ -101,8 +102,8 @@ export default function SearchResults() {
       }
 
       if (filterDate) {
-        results = results.filter(post => 
-          new Date(post.createdAt) >= filterDate
+        results = results.filter(
+          (post) => new Date(post.createdAt) >= filterDate
         );
       }
     }
@@ -111,7 +112,7 @@ export default function SearchResults() {
   };
 
   const handleFilterChange = (filterType, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       [filterType]: value,
     }));
@@ -119,20 +120,20 @@ export default function SearchResults() {
 
   const clearFilters = () => {
     setFilters({
-      category: '',
-      tag: '',
-      dateRange: '',
+      category: "",
+      tag: "",
+      dateRange: "",
     });
   };
 
   const getCategoryName = (categoryId) => {
-    const category = categories.find(cat => cat.$id === categoryId);
-    return category ? category.name : 'Unknown';
+    const category = categories.find((cat) => cat.$id === categoryId);
+    return category ? category.name : "Unknown";
   };
 
   const getTagName = (tagId) => {
-    const tag = tags.find(t => t.$id === tagId);
-    return tag ? tag.name : 'Unknown';
+    const tag = tags.find((t) => t.$id === tagId);
+    return tag ? tag.name : "Unknown";
   };
 
   if (loading) {
@@ -151,7 +152,7 @@ export default function SearchResults() {
         {/* Search Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            {query ? `Search Results for "${query}"` : 'Search Posts'}
+            {query ? `Search Results for "${query}"` : "Search Posts"}
           </h1>
           <div className="max-w-md mx-auto">
             <SearchBar />
@@ -182,7 +183,7 @@ export default function SearchResults() {
               </label>
               <select
                 value={filters.category}
-                onChange={(e) => handleFilterChange('category', e.target.value)}
+                onChange={(e) => handleFilterChange("category", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               >
                 <option value="">All Categories</option>
@@ -202,7 +203,7 @@ export default function SearchResults() {
               </label>
               <select
                 value={filters.tag}
-                onChange={(e) => handleFilterChange('tag', e.target.value)}
+                onChange={(e) => handleFilterChange("tag", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               >
                 <option value="">All Tags</option>
@@ -222,7 +223,9 @@ export default function SearchResults() {
               </label>
               <select
                 value={filters.dateRange}
-                onChange={(e) => handleFilterChange('dateRange', e.target.value)}
+                onChange={(e) =>
+                  handleFilterChange("dateRange", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               >
                 <option value="">All Time</option>
@@ -238,19 +241,21 @@ export default function SearchResults() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">
-              {filteredPosts.length} {filteredPosts.length === 1 ? 'result' : 'results'} found
+              {filteredPosts.length}{" "}
+              {filteredPosts.length === 1 ? "result" : "results"} found
             </h2>
           </div>
 
           {filteredPosts.length === 0 ? (
             <div className="text-center py-12">
               <FiSearch className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No results found
+              </h3>
               <p className="text-gray-600 mb-4">
-                {query 
+                {query
                   ? `No posts found matching "${query}". Try adjusting your search terms or filters.`
-                  : 'Try searching for something or adjusting your filters.'
-                }
+                  : "Try searching for something or adjusting your filters."}
               </p>
               <Link
                 to="/"
