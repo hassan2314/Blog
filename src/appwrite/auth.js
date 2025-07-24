@@ -59,6 +59,27 @@ export class AuthService {
     }
     return null;
   }
+
+  async getCurrentUserWithRole() {
+    try {
+      const userAccount = await this.account.get();
+      if (userAccount) {
+        // Import roleService dynamically to avoid circular dependency
+        const { default: roleService } = await import('./roles.js');
+        const roleData = await roleService.getUserRole(userAccount.$id);
+        
+        return {
+          userData: userAccount,
+          userRole: roleData.role,
+          permissions: roleData.permissions
+        };
+      }
+      return null;
+    } catch (error) {
+      console.log("Get current user with role error", error);
+      return null;
+    }
+  }
 }
 
 const authService = new AuthService();
