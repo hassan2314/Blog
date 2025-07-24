@@ -98,11 +98,13 @@ export class Services {
         conf.appwriteCollectionId,
         queries
       );
-      return posts;
+      // Ensure we always return a valid structure
+      return posts || { documents: [] };
     } catch (error) {
       console.log("Get posts error", error);
+      // Return empty structure on error
+      return { documents: [] };
     }
-    return null;
   }
 
   async uploadImage(file) {

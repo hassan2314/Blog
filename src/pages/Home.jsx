@@ -12,11 +12,16 @@ function Home() {
       try {
         setLoading(true);
         const response = await service.getPosts();
-        if (response) {
-          setPosts(response.documents);
+        if (response && response.documents) {
+          // Filter out any undefined or invalid posts
+          const validPosts = response.documents.filter(post => post && post.$id && post.title);
+          setPosts(validPosts);
+        } else {
+          setPosts([]);
         }
       } catch (error) {
         console.error("Error fetching posts:", error);
+        setPosts([]); // Ensure posts is always an array
       } finally {
         setLoading(false);
       }
@@ -48,9 +53,13 @@ function Home() {
               Latest Posts
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post) => (
-                <PostCard key={post.$id} {...post} />
-              ))}
+              {posts.map((post) => {
+                // Additional safety check before rendering
+                if (!post || !post.$id) {
+                  return null;
+                }
+                return <PostCard key={post.$id} post={post} />;
+              })}
             </div>
           </>
         ) : (
