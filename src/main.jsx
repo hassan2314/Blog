@@ -17,6 +17,7 @@ import Post from "./pages/Post.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AdminUsers from "./pages/AdminUsers.jsx";
 import AdminRoles from "./pages/AdminRoles.jsx";
+import AdminAnalytics from "./pages/AdminAnalytics.jsx";
 import { RouterProvider } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import NotFound from "./pages/NotFound.jsx";
@@ -120,12 +121,7 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication>
             <PermissionGuard requiredPermission="analytics.view">
-              <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                  <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
-                  <p className="text-gray-600 mt-2">Analytics dashboard coming soon...</p>
-                </div>
-              </div>
+              <AdminAnalytics />
             </PermissionGuard>
           </AuthLayout>
         ),
