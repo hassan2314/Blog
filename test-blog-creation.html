@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Creation API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4F46E5;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #4338CA;
+        }
+        button:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #D1FAE5;
+            border: 1px solid #10B981;
+            color: #065F46;
+        }
+        .error {
+            background-color: #FEE2E2;
+            border: 1px solid #EF4444;
+            color: #991B1B;
+        }
+        .info {
+            background-color: #DBEAFE;
+            border: 1px solid #3B82F6;
+            color: #1E40AF;
+        }
+        .loading {
+            background-color: #FEF3C7;
+            border: 1px solid #F59E0B;
+            color: #92400E;
+        }
+        .config-section {
+            background-color: #F3F4F6;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Blog Creation API Test</h1>
+        <p>This tool tests the blog post creation functionality with all enhanced features.</p>
+
+        <!-- Configuration Section -->
+        <div class="config-section">
+            <h3>⚙️ Configuration</h3>
+            <div class="form-group">
+                <label for="appwriteUrl">Appwrite URL:</label>
+                <input type="url" id="appwriteUrl" value="https://fra.cloud.appwrite.io/v1" placeholder="https://your-appwrite-url/v1">
+            </div>
+            <div class="form-group">
+                <label for="projectId">Project ID:</label>
+                <input type="text" id="projectId" placeholder="your-project-id">
+            </div>
+            <div class="form-group">
+                <label for="databaseId">Database ID:</label>
+                <input type="text" id="databaseId" placeholder="your-database-id">
+            </div>
+            <div class="form-group">
+                <label for="collectionId">Posts Collection ID:</label>
+                <input type="text" id="collectionId" placeholder="your-posts-collection-id">
+            </div>
+            <div class="form-group">
+                <label for="bucketId">Storage Bucket ID:</label>
+                <input type="text" id="bucketId" placeholder="your-bucket-id">
+            </div>
+        </div>
+
+        <!-- Authentication Section -->
+        <div class="config-section">
+            <h3>🔐 Authentication</h3>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="test@example.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="password">
+            </div>
+            <button onclick="authenticate()">Login</button>
+            <button onclick="createTestUser()">Create Test User</button>
+        </div>
+
+        <!-- Blog Post Form -->
+        <form id="blogForm">
+            <h3>📝 Create Blog Post</h3>
+            
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" value="Test Blog Post - API Test" required>
+            </div>
+
+            <div class="form-group">
+                <label for="slug">Slug:</label>
+                <input type="text" id="slug" value="test-blog-post-api-test" required>
+            </div>
+
+            <div class="form-group">
+                <label for="content">Content:</label>
+                <textarea id="content" required>
+# Welcome to Test Blog Post
+
+This is a **test blog post** created via API to verify the blog creation functionality.
+
+## Features Tested:
+- Basic post creation
+- Content formatting
+- Image upload
+- Categories and tags
+- User authentication
+
+## Sample Content:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+### Code Example:
+```javascript
+function testBlogCreation() {
+    console.log("Testing blog creation API...");
+    return "Success!";
+}
+```
+
+This post demonstrates that the blog creation API is working correctly! 🎉
+                </textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="featuredImage">Featured Image:</label>
+                <input type="file" id="featuredImage" accept="image/*">
+                <small>Select an image file to test image upload functionality</small>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status">
+                    <option value="true">Active (Published)</option>
+                    <option value="false">Inactive (Draft)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Categories (Enhanced Feature):</label>
+                <div class="checkbox-group" id="categoriesGroup">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cat-technology" value="technology">
+                        <label for="cat-technology">Technology</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cat-lifestyle" value="lifestyle">
+                        <label for="cat-lifestyle">Lifestyle</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cat-education" value="education">
+                        <label for="cat-education">Education</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags (Enhanced Feature):</label>
+                <input type="text" id="tags" placeholder="javascript, react, web-development" 
+                       title="Enter comma-separated tags">
+                <small>Enter tags separated by commas</small>
+            </div>
+
+            <button type="button" onclick="createBlogPost()">Create Blog Post</button>
+            <button type="button" onclick="testAllFeatures()">Test All Features</button>
+            <button type="button" onclick="clearResults()">Clear Results</button>
+        </form>
+
+        <!-- Results Section -->
+        <div id="results"></div>
+    </div>
+
+    <!-- Include Appwrite SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+    
+    <script>
+        let appwrite = null;
+        let account = null;
+        let databases = null;
+        let storage = null;
+        let currentUser = null;
+
+        // Initialize Appwrite
+        function initializeAppwrite() {
+            const url = document.getElementById('appwriteUrl').value;
+            const projectId = document.getElementById('projectId').value;
+
+            if (!url || !projectId) {
+                showResult('Please fill in Appwrite URL and Project ID', 'error');
+                return false;
+            }
+
+            try {
+                appwrite = new Appwrite.Client()
+                    .setEndpoint(url)
+                    .setProject(projectId);
+
+                account = new Appwrite.Account(appwrite);
+                databases = new Appwrite.Databases(appwrite);
+                storage = new Appwrite.Storage(appwrite);
+
+                showResult('Appwrite initialized successfully', 'success');
+                return true;
+            } catch (error) {
+                showResult('Failed to initialize Appwrite: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // Create test user
+        async function createTestUser() {
+            if (!initializeAppwrite()) return;
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showResult('Please enter email and password', 'error');
+                return;
+            }
+
+            try {
+                showResult('Creating test user...', 'loading');
+                
+                const user = await account.create(
+                    Appwrite.ID.unique(),
+                    email,
+                    password,
+                    'Test User'
+                );
+
+                showResult('Test user created successfully!\nUser ID: ' + user.$id, 'success');
+                
+                // Auto-login after creation
+                setTimeout(() => authenticate(), 1000);
+            } catch (error) {
+                showResult('Failed to create user: ' + error.message, 'error');
+            }
+        }
+
+        // Authenticate user
+        async function authenticate() {
+            if (!initializeAppwrite()) return;
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showResult('Please enter email and password', 'error');
+                return;
+            }
+
+            try {
+                showResult('Authenticating...', 'loading');
+                
+                const session = await account.createEmailSession(email, password);
+                currentUser = await account.get();
+
+                showResult('Authentication successful!\nUser: ' + currentUser.name + '\nEmail: ' + currentUser.email, 'success');
+            } catch (error) {
+                showResult('Authentication failed: ' + error.message, 'error');
+            }
+        }
+
+        // Create blog post
+        async function createBlogPost() {
+            if (!currentUser) {
+                showResult('Please authenticate first', 'error');
+                return;
+            }
+
+            const databaseId = document.getElementById('databaseId').value;
+            const collectionId = document.getElementById('collectionId').value;
+            const bucketId = document.getElementById('bucketId').value;
+
+            if (!databaseId || !collectionId) {
+                showResult('Please fill in Database ID and Collection ID', 'error');
+                return;
+            }
+
+            try {
+                showResult('Creating blog post...', 'loading');
+
+                // Get form data
+                const title = document.getElementById('title').value;
+                const slug = document.getElementById('slug').value;
+                const content = document.getElementById('content').value;
+                const status = document.getElementById('status').value === 'true';
+                const imageFile = document.getElementById('featuredImage').files[0];
+
+                // Get categories
+                const categories = Array.from(document.querySelectorAll('#categoriesGroup input:checked'))
+                    .map(cb => cb.value);
+
+                // Get tags
+                const tagsInput = document.getElementById('tags').value;
+                const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
+
+                let featuredImageId = null;
+
+                // Upload image if provided
+                if (imageFile && bucketId) {
+                    showResult('Uploading image...', 'loading');
+                    const imageUpload = await storage.createFile(bucketId, Appwrite.ID.unique(), imageFile);
+                    featuredImageId = imageUpload.$id;
+                    showResult('Image uploaded successfully: ' + featuredImageId, 'info');
+                }
+
+                // Create the blog post
+                const postData = {
+                    title: title,
+                    content: content,
+                    featuredimage: featuredImageId || 'default-image-id',
+                    status: status,
+                    userId: currentUser.$id,
+                    categories: categories,
+                    tags: tags,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    viewCount: 0,
+                    likeCount: 0
+                };
+
+                const post = await databases.createDocument(
+                    databaseId,
+                    collectionId,
+                    slug,
+                    postData
+                );
+
+                const result = `Blog post created successfully! 🎉
+
+Post Details:
+- ID: ${post.$id}
+- Title: ${post.title}
+- Status: ${post.status ? 'Published' : 'Draft'}
+- Author: ${currentUser.name}
+- Categories: ${categories.join(', ') || 'None'}
+- Tags: ${tags.join(', ') || 'None'}
+- Featured Image: ${featuredImageId || 'None'}
+- Created: ${post.createdAt}
+
+Enhanced Features Tested:
+✅ Basic post creation
+✅ User authentication
+✅ Image upload ${featuredImageId ? '(Success)' : '(Skipped)'}
+✅ Categories assignment
+✅ Tags assignment
+✅ Metadata fields (viewCount, likeCount)`;
+
+                showResult(result, 'success');
+
+            } catch (error) {
+                showResult('Failed to create blog post: ' + error.message + '\n\nFull error: ' + JSON.stringify(error, null, 2), 'error');
+            }
+        }
+
+        // Test all features
+        async function testAllFeatures() {
+            if (!currentUser) {
+                showResult('Please authenticate first', 'error');
+                return;
+            }
+
+            showResult('Running comprehensive feature test...', 'loading');
+
+            const tests = [
+                { name: 'User Authentication', status: currentUser ? 'PASS' : 'FAIL' },
+                { name: 'Appwrite Connection', status: appwrite ? 'PASS' : 'FAIL' },
+                { name: 'Database Access', status: databases ? 'PASS' : 'FAIL' },
+                { name: 'Storage Access', status: storage ? 'PASS' : 'FAIL' }
+            ];
+
+            // Test database collections
+            const databaseId = document.getElementById('databaseId').value;
+            const collections = [
+                { name: 'Posts Collection', id: document.getElementById('collectionId').value },
+                { name: 'Comments Collection', id: 'comments' },
+                { name: 'Categories Collection', id: 'categories' },
+                { name: 'Tags Collection', id: 'tags' },
+                { name: 'User Profiles Collection', id: 'user_profiles' },
+                { name: 'Notifications Collection', id: 'notifications' }
+            ];
+
+            for (const collection of collections) {
+                try {
+                    await databases.listDocuments(databaseId, collection.id, []);
+                    tests.push({ name: collection.name, status: 'PASS' });
+                } catch (error) {
+                    tests.push({ name: collection.name, status: 'FAIL - ' + error.message });
+                }
+            }
+
+            const results = `🧪 COMPREHENSIVE FEATURE TEST RESULTS
+
+=== CORE FUNCTIONALITY ===
+${tests.map(test => `${test.status === 'PASS' ? '✅' : '❌'} ${test.name}: ${test.status}`).join('\n')}
+
+=== RECOMMENDATIONS ===
+${tests.filter(t => t.status !== 'PASS').length === 0 
+    ? '🎉 All tests passed! Your blog creation API is fully functional.'
+    : '⚠️  Some features need setup. Check the APPWRITE_SETUP.md guide for missing collections.'
+}
+
+=== NEXT STEPS ===
+1. Create any missing collections in Appwrite
+2. Set proper permissions for all collections
+3. Test blog post creation with the form above
+4. Verify enhanced features (comments, profiles, etc.)`;
+
+            showResult(results, tests.filter(t => t.status !== 'PASS').length === 0 ? 'success' : 'info');
+        }
+
+        // Utility functions
+        function showResult(message, type) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Auto-generate slug from title
+        document.getElementById('title').addEventListener('input', function(e) {
+            const slug = e.target.value
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+            document.getElementById('slug').value = slug;
+        });
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            showResult('Blog Creation API Test Tool loaded. Please configure your Appwrite settings and authenticate.', 'info');
+        });
+    </script>
+</body>
+</html>

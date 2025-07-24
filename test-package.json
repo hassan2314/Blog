@@ -1,0 +1,23 @@
+{
+  "name": "megablog-api-test",
+  "version": "1.0.0",
+  "description": "API testing tools for MegaBlog creation functionality",
+  "main": "test-blog-api.js",
+  "scripts": {
+    "test": "node test-blog-api.js",
+    "test:blog": "node test-blog-api.js",
+    "install-deps": "npm install node-appwrite"
+  },
+  "dependencies": {
+    "node-appwrite": "^11.0.0"
+  },
+  "keywords": [
+    "blog",
+    "api",
+    "test",
+    "appwrite",
+    "nodejs"
+  ],
+  "author": "MegaBlog Team",
+  "license": "MIT"
+}
