@@ -21,6 +21,9 @@ export class RoleService {
         'user.create', 'user.read', 'user.update', 'user.delete',
         'post.create', 'post.read', 'post.update', 'post.delete',
         'role.create', 'role.read', 'role.update', 'role.delete',
+        'category.create', 'category.read', 'category.update', 'category.delete',
+        'tag.create', 'tag.read', 'tag.update', 'tag.delete',
+        'profile.read', 'profile.update', 'profile.delete',
         'admin.access', 'analytics.view', 'settings.manage'
       ]
     },
@@ -30,6 +33,9 @@ export class RoleService {
       permissions: [
         'user.read', 'user.update',
         'post.create', 'post.read', 'post.update', 'post.delete',
+        'category.create', 'category.read', 'category.update', 'category.delete',
+        'tag.read', 'tag.update', 'tag.delete',
+        'profile.read', 'profile.update',
         'admin.access', 'analytics.view'
       ]
     },
@@ -38,7 +44,9 @@ export class RoleService {
       displayName: 'Moderator',
       permissions: [
         'post.read', 'post.update', 'post.delete',
-        'user.read', 'admin.access'
+        'category.read', 'tag.read', 'tag.update',
+        'user.read', 'profile.read',
+        'admin.access'
       ]
     },
     EDITOR: {
@@ -46,13 +54,15 @@ export class RoleService {
       displayName: 'Editor',
       permissions: [
         'post.create', 'post.read', 'post.update',
+        'category.read', 'tag.create', 'tag.read', 'tag.update',
+        'profile.read', 'profile.update',
         'admin.access'
       ]
     },
     USER: {
       name: 'user',
       displayName: 'User',
-      permissions: ['post.read']
+      permissions: ['post.read', 'profile.read', 'profile.update']
     }
   };
 

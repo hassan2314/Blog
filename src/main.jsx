@@ -18,6 +18,8 @@ import AdminDashboard from "./pages/AdminDashboard.jsx";
 import AdminUsers from "./pages/AdminUsers.jsx";
 import AdminRoles from "./pages/AdminRoles.jsx";
 import AdminAnalytics from "./pages/AdminAnalytics.jsx";
+import AdminCategories from "./pages/AdminCategories.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
 import { RouterProvider } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import NotFound from "./pages/NotFound.jsx";
@@ -127,6 +129,16 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/admin/categories",
+        element: (
+          <AuthLayout authentication>
+            <PermissionGuard requiredPermission="category.read">
+              <AdminCategories />
+            </PermissionGuard>
+          </AuthLayout>
+        ),
+      },
+      {
         path: "/admin/settings",
         element: (
           <AuthLayout authentication>
@@ -138,6 +150,23 @@ const router = createBrowserRouter([
                 </div>
               </div>
             </PermissionGuard>
+          </AuthLayout>
+        ),
+      },
+      // Profile Routes
+      {
+        path: "/profile",
+        element: (
+          <AuthLayout authentication>
+            <UserProfile />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/profile/:userId",
+        element: (
+          <AuthLayout authentication>
+            <UserProfile />
           </AuthLayout>
         ),
       },

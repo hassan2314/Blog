@@ -15,7 +15,7 @@ export class Services {
     this.storage = new Storage(this.client);
   }
 
-  async createPost({ title, slug, content, featuredimage, status, userId }) {
+  async createPost({ title, slug, content, featuredimage, status, userId, categoryId, tags = [] }) {
     try {
       const post = await this.databases.createDocument(
         conf.appwriteDatabaseId,
@@ -27,6 +27,8 @@ export class Services {
           featuredimage,
           status,
           userId,
+          categoryId: categoryId || null,
+          tags: JSON.stringify(tags),
         }
       );
       if (post) {
@@ -38,18 +40,23 @@ export class Services {
     return null;
   }
 
-  async updatePost(slug, { title, content, featuredImage, status }) {
+  async updatePost(slug, { title, content, featuredImage, status, categoryId, tags }) {
     try {
+      const updateData = {
+        title,
+        content,
+        featuredImage,
+        status,
+      };
+      
+      if (categoryId !== undefined) updateData.categoryId = categoryId || null;
+      if (tags !== undefined) updateData.tags = JSON.stringify(tags);
+      
       return await this.databases.updateDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
         slug,
-        {
-          title,
-          content,
-          featuredImage,
-          status,
-        }
+        updateData
       );
     } catch (error) {
       console.log("Update post error", error);
@@ -124,6 +131,16 @@ export class Services {
 
   getImagePreview(imageId) {
     return this.storage.getFileView(conf.appwriteBucketId, imageId);
+  }
+
+  // Helper method to parse tags from JSON string
+  parsePostTags(tagsJson) {
+    try {
+      return tagsJson ? JSON.parse(tagsJson) : [];
+    } catch (error) {
+      console.log("Parse tags error", error);
+      return [];
+    }
   }
 }
 

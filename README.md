@@ -4,6 +4,7 @@ A modern, full-featured blogging platform built with React, Vite, and Appwrite. 
 
 ## ✨ Features
 
+### Core Features
 - **User Authentication**: Secure signup, login, and logout functionality
 - **Rich Text Editor**: TinyMCE integration for creating and editing blog posts
 - **Image Upload**: Featured image support for blog posts
@@ -14,6 +15,14 @@ A modern, full-featured blogging platform built with React, Vite, and Appwrite. 
 - **Routing**: React Router for navigation and protected routes
 - **Error Handling**: Comprehensive error boundaries and loading states
 - **Modern UI**: Clean, professional interface with loading spinners and confirmations
+
+### New Features ✨
+- **User Profiles**: Complete user profile management with bio, social links, and privacy settings
+- **Category Management**: Admins can create and manage post categories with custom colors
+- **Tag System**: Editors can create and use tags for better content organization
+- **Role-Based Permissions**: Advanced permission system for different user roles
+- **Admin Dashboard**: Comprehensive admin panel for managing users, content, and categories
+- **Content Organization**: Posts can be categorized and tagged for better discoverability
 
 ## 🛠️ Tech Stack
 
@@ -59,17 +68,30 @@ A modern, full-featured blogging platform built with React, Vite, and Appwrite. 
    VITE_APPWRITE_PROJECT_ID=your_project_id
    VITE_APPWRITE_DATABASE_ID=your_database_id
    VITE_APPWRITE_COLLECTION_ID=your_collection_id
+   VITE_APPWRITE_USER_ROLES_COLLECTION_ID=user_roles
+   VITE_APPWRITE_CATEGORIES_COLLECTION_ID=categories
+   VITE_APPWRITE_TAGS_COLLECTION_ID=tags
+   VITE_APPWRITE_USER_PROFILES_COLLECTION_ID=user_profiles
    VITE_APPWRITE_BUCKET_ID=your_bucket_id
    ```
 
 4. **Appwrite Setup**
 
-   Set up your Appwrite project with:
+   Set up your Appwrite project with the required collections. **Important**: Follow the detailed setup guide in `DATABASE_SETUP.md` for complete instructions.
 
-   - A database with a collection for blog posts
+   Required collections:
+   - **posts**: Blog posts collection (existing)
+   - **user_roles**: User role management
+   - **categories**: Post categories (new)
+   - **tags**: Post tags (new)
+   - **user_profiles**: User profiles (new)
+   
+   Additional setup:
    - A storage bucket for featured images
    - Authentication enabled
-   - Proper permissions configured
+   - Proper role-based permissions configured
+
+   📋 **See `DATABASE_SETUP.md` for detailed collection setup instructions**
 
 5. **Start the development server**
 
@@ -191,6 +213,48 @@ This project is open source and available under the [MIT License](LICENSE).
 - Ensure proper Appwrite permissions are set for all operations
 - TinyMCE requires an internet connection for the editor to load
 - Image uploads require proper CORS configuration in Appwrite
+
+## 🎯 User Roles & Permissions
+
+The application now includes a comprehensive role-based permission system:
+
+### Available Roles
+- **Super Admin**: Full system access including user management and system settings
+- **Admin**: User management, content management, and category management
+- **Moderator**: Content moderation and basic user management
+- **Editor**: Content creation, editing, and tag management
+- **User**: Basic access to read content and manage own profile
+
+### Key Features by Role
+
+#### Admin Features
+- Create and manage post categories with custom colors and descriptions
+- Manage user roles and permissions
+- Access comprehensive admin dashboard with analytics
+- Full content management capabilities
+
+#### Editor Features
+- Create and manage blog posts with rich text editing
+- Use existing categories created by admins
+- Create and use tags for content organization
+- Access to content creation tools
+
+#### User Features
+- Create and customize personal profiles
+- Manage profile privacy settings
+- Add social media links and bio
+- View public profiles of other users
+
+## 📱 New Pages & Components
+
+### Admin Panel
+- **Categories Management**: `/admin/categories` - Create and manage post categories
+- **Enhanced Dashboard**: Real-time statistics and system health monitoring
+- **User Management**: Role assignment and user oversight
+
+### User Features
+- **Profile Pages**: `/profile` and `/profile/:userId` - User profile management and viewing
+- **Enhanced Post Creation**: Category selection and tag management in post forms
 
 ## 🔮 Future Enhancements
 

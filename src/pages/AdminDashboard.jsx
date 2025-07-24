@@ -7,6 +7,7 @@ import {
   ShieldCheckIcon,
   ChartBarIcon,
   CogIcon,
+  TagIcon,
   EyeIcon,
   ClockIcon,
   TrendingUpIcon,
@@ -24,6 +25,7 @@ import {
 import roleService from '../appwrite/roles';
 import service from '../appwrite/config';
 import authService from '../appwrite/auth';
+import categoryService from '../appwrite/categories';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const AdminDashboard = () => {
@@ -32,6 +34,7 @@ const AdminDashboard = () => {
     totalUsers: 0,
     totalPosts: 0,
     totalRoles: 0,
+    totalCategories: 0,
     activeUsers: 0,
     publishedPosts: 0,
     draftPosts: 0,
@@ -84,6 +87,9 @@ const AdminDashboard = () => {
       // Get available roles
       const availableRoles = roleService.getAllRoles();
 
+      // Get categories
+      const categoriesResult = await categoryService.getCategories(false);
+
       // Calculate analytics
       const now = new Date();
       const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
@@ -103,6 +109,7 @@ const AdminDashboard = () => {
         totalUsers: usersWithRoles.length,
         totalPosts: allPosts.documents.length,
         totalRoles: availableRoles.length,
+        totalCategories: categoriesResult.documents.length,
         activeUsers: Math.floor(usersWithRoles.length * 0.7), // Mock active users
         publishedPosts: Math.floor(allPosts.documents.length * 0.8),
         draftPosts: Math.floor(allPosts.documents.length * 0.2),
@@ -197,6 +204,17 @@ const AdminDashboard = () => {
       color: 'bg-purple-500',
       count: stats.totalRoles,
       subtext: 'System roles',
+      trend: 'neutral'
+    },
+    {
+      title: 'Categories',
+      description: 'Manage post categories',
+      icon: TagIcon,
+      link: '/admin/categories',
+      permission: 'category.read',
+      color: 'bg-teal-500',
+      count: stats.totalCategories,
+      subtext: 'Content categories',
       trend: 'neutral'
     },
     {
