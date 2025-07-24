@@ -13,6 +13,8 @@ import AllPosts from "./pages/AllPosts.jsx";
 import AddPost from "./pages/AddPost.jsx";
 import EditPost from "./pages/EditPost.jsx";
 import Post from "./pages/Post.jsx";
+import Profile from "./pages/Profile.jsx";
+import SearchResults from "./pages/SearchResults.jsx";
 import { RouterProvider } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import NotFound from "./pages/NotFound.jsx";
@@ -72,6 +74,14 @@ const router = createBrowserRouter([
       {
         path: "/post/:slug",
         element: <Post />,
+      },
+      {
+        path: "/profile/:userId",
+        element: <Profile />,
+      },
+      {
+        path: "/search",
+        element: <SearchResults />,
       },
       {
         path: "*",
