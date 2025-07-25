@@ -8,11 +8,14 @@ import {
   EnvelopeIcon, 
   LockClosedIcon,
   CheckCircleIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
+  ShieldCheckIcon,
+  ChevronDownIcon
 } from "@heroicons/react/24/outline";
 
 import { login } from "../store/authSlice.js";
 import authService from "../appwrite/auth";
+import roleService from "../appwrite/roles";
 import { useDispatch } from "react-redux";
 import { Button, Input, Logo } from "./index.js";
 
@@ -35,11 +38,18 @@ const Signup = () => {
     defaultValues: {
       name: "",
       email: "",
-      password: ""
+      password: "",
+      role: "user"
     }
   });
 
   const watchedPassword = watch("password");
+
+  // Get available roles for selection
+  const availableRoles = roleService.getAllRoles().filter(role => 
+    // Allow all roles except super_admin for regular signup
+    role.name !== 'super_admin'
+  );
 
   // Password strength calculation
   const calculatePasswordStrength = (password) => {
@@ -123,6 +133,50 @@ const Signup = () => {
         {!error && touched && props.value && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             <CheckCircleIcon className="h-5 w-5 text-green-500" />
+          </div>
+        )}
+      </div>
+      {error && touched && (
+        <p className="mt-1 text-sm text-red-600">{error}</p>
+      )}
+    </div>
+  );
+
+  const SelectWithIcon = ({ icon: Icon, error, touched, options, ...props }) => (
+    <div className="w-full">
+      {props.label && (
+        <label className="inline-block mb-2 pl-1 text-sm font-medium text-gray-700" htmlFor={props.id}>
+          {props.label}
+        </label>
+      )}
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Icon className={`h-5 w-5 ${error && touched ? 'text-red-400' : 'text-gray-400'}`} />
+        </div>
+        <select
+          {...props}
+          className={`
+            block w-full pl-10 pr-10 py-3 border rounded-lg shadow-sm 
+            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+            transition-colors duration-200 appearance-none bg-white
+            ${error && touched 
+              ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500' 
+              : 'border-gray-300 text-gray-900'
+            }
+          `}
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+        </div>
+        {error && touched && (
+          <div className="absolute inset-y-0 right-0 pr-8 flex items-center pointer-events-none">
+            <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
           </div>
         )}
       </div>
@@ -294,6 +348,21 @@ const Signup = () => {
               })}
             />
 
+            <SelectWithIcon
+              icon={ShieldCheckIcon}
+              id="role"
+              label="Account Type"
+              error={errors.role?.message}
+              touched={touchedFields.role}
+              options={availableRoles.map(role => ({
+                value: role.name,
+                label: role.displayName
+              }))}
+              {...register("role", {
+                required: "Please select an account type"
+              })}
+            />
+
             <PasswordInputWithToggle
               id="password"
               label="Password"
@@ -319,6 +388,17 @@ const Signup = () => {
                 }
               })}
             />
+
+            {/* Role Description */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">Account Types:</h4>
+              <div className="text-xs text-blue-800 space-y-1">
+                <div><strong>User:</strong> Can read posts and manage own profile</div>
+                <div><strong>Editor:</strong> Can create and edit posts, manage categories and tags</div>
+                <div><strong>Moderator:</strong> Can moderate content and manage posts</div>
+                <div><strong>Admin:</strong> Full access to content and user management</div>
+              </div>
+            </div>
 
             <div>
               <Button

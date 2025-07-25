@@ -11,7 +11,7 @@ export class AuthService {
     this.account = new Account(this.client);
   }
 
-  async create({ email, password, name }) {
+  async create({ email, password, name, role = 'user' }) {
     try {
       const userAccount = await this.account.create(
         ID.unique(),
@@ -21,6 +21,15 @@ export class AuthService {
       );
 
       if (userAccount) {
+        // Assign role to the new user
+        try {
+          const { default: roleService } = await import('./roles.js');
+          await roleService.updateUserRole(userAccount.$id, role);
+        } catch (roleError) {
+          console.error("Error assigning role to new user:", roleError);
+          // Don't fail the signup if role assignment fails, just log it
+        }
+
         return this.login({ email, password });
       } else {
         return null;
