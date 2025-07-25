@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   ChartBarIcon,
-  TrendingUpIcon,
   UsersIcon,
   DocumentTextIcon,
   EyeIcon,
@@ -476,7 +475,7 @@ const AdminAnalytics = () => {
                       </p>
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
-                      <TrendingUpIcon className="h-4 w-4 mr-1 text-green-500" />
+                      {/* <TrendingUpIcon className="h-4 w-4 mr-1 text-green-500" /> */}
                       #{index + 1}
                     </div>
                   </div>
