@@ -1,42 +1,43 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import {
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { 
   ChartBarIcon,
+  ArrowTrendingUpIcon,
   UsersIcon,
   DocumentTextIcon,
   EyeIcon,
   ClockIcon,
   CalendarIcon,
   ArrowUpIcon,
-  ArrowDownIcon,
-} from "@heroicons/react/24/outline";
-import roleService from "../appwrite/roles";
-import service from "../appwrite/config";
-import LoadingSpinner from "../components/LoadingSpinner";
+  ArrowDownIcon
+} from '@heroicons/react/24/outline';
+import roleService from '../appwrite/roles';
+import service from '../appwrite/config';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const AdminAnalytics = () => {
-  const { permissions } = useSelector((state) => state.auth);
+  const { permissions } = useSelector(state => state.auth);
   const [analytics, setAnalytics] = useState({
     overview: {
       totalViews: 0,
       totalUsers: 0,
       totalPosts: 0,
-      engagementRate: 0,
+      engagementRate: 0
     },
     trends: {
       viewsGrowth: 0,
       usersGrowth: 0,
       postsGrowth: 0,
-      engagementGrowth: 0,
+      engagementGrowth: 0
     },
     timeSeriesData: [],
     topContent: [],
     userActivity: [],
-    roleDistribution: [],
+    roleDistribution: []
   });
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState("30d");
-  const [selectedMetric, setSelectedMetric] = useState("views");
+  const [timeRange, setTimeRange] = useState('30d');
+  const [selectedMetric, setSelectedMetric] = useState('views');
 
   useEffect(() => {
     fetchAnalyticsData();
@@ -45,32 +46,32 @@ const AdminAnalytics = () => {
   const fetchAnalyticsData = async () => {
     try {
       setLoading(true);
-
+      
       // Fetch posts and users data
       const [posts, usersWithRoles] = await Promise.all([
         service.getPosts([]),
-        roleService.getAllUsersWithRoles(),
+        roleService.getAllUsersWithRoles()
       ]);
 
       // Generate mock analytics data based on real data
       const totalPosts = posts.documents.length;
       const totalUsers = usersWithRoles.length;
-
+      
       // Mock time series data for the last 30 days
       const timeSeriesData = generateTimeSeriesData(30);
-
+      
       // Calculate top content
-      const topContent = posts.documents.slice(0, 10).map((post) => ({
+      const topContent = posts.documents.slice(0, 10).map(post => ({
         id: post.$id,
         title: post.title,
         views: Math.floor(Math.random() * 1000) + 100,
         engagement: Math.floor(Math.random() * 50) + 10,
-        createdAt: post.$createdAt,
+        createdAt: post.$createdAt
       }));
 
       // Mock user activity data
       const userActivity = generateUserActivityData(7);
-
+      
       // Role distribution
       const roleDistribution = generateRoleDistribution(usersWithRoles);
 
@@ -79,21 +80,21 @@ const AdminAnalytics = () => {
           totalViews: Math.floor(totalPosts * 150 + Math.random() * 1000),
           totalUsers: totalUsers,
           totalPosts: totalPosts,
-          engagementRate: Math.floor(Math.random() * 30) + 60,
+          engagementRate: Math.floor(Math.random() * 30) + 60
         },
         trends: {
           viewsGrowth: Math.floor(Math.random() * 20) + 5,
           usersGrowth: Math.floor(Math.random() * 15) + 2,
           postsGrowth: Math.floor(Math.random() * 25) + 8,
-          engagementGrowth: Math.floor(Math.random() * 10) - 5,
+          engagementGrowth: Math.floor(Math.random() * 10) - 5
         },
         timeSeriesData,
         topContent,
         userActivity,
-        roleDistribution,
+        roleDistribution
       });
     } catch (error) {
-      console.error("Error fetching analytics data:", error);
+      console.error('Error fetching analytics data:', error);
     } finally {
       setLoading(false);
     }
@@ -102,48 +103,48 @@ const AdminAnalytics = () => {
   const generateTimeSeriesData = (days) => {
     const data = [];
     const now = new Date();
-
+    
     for (let i = days; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
-
+      
       data.push({
-        date: date.toISOString().split("T")[0],
+        date: date.toISOString().split('T')[0],
         views: Math.floor(Math.random() * 200) + 50,
         users: Math.floor(Math.random() * 50) + 10,
         posts: Math.floor(Math.random() * 10) + 1,
-        engagement: Math.floor(Math.random() * 100) + 20,
+        engagement: Math.floor(Math.random() * 100) + 20
       });
     }
-
+    
     return data;
   };
 
   const generateUserActivityData = (days) => {
     const data = [];
     const now = new Date();
-
+    
     for (let i = days; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
-
+      
       data.push({
         date: date.toLocaleDateString(),
         activeUsers: Math.floor(Math.random() * 100) + 20,
         newUsers: Math.floor(Math.random() * 20) + 2,
-        returningUsers: Math.floor(Math.random() * 80) + 15,
+        returningUsers: Math.floor(Math.random() * 80) + 15
       });
     }
-
+    
     return data;
   };
 
   const generateRoleDistribution = (users) => {
     const roles = roleService.getAllRoles();
-    return roles.map((role) => ({
+    return roles.map(role => ({
       role: role.displayName,
       count: Math.floor(Math.random() * Math.max(users.length / 2, 1)) + 1,
-      percentage: Math.floor(Math.random() * 30) + 10,
+      percentage: Math.floor(Math.random() * 30) + 10
     }));
   };
 
@@ -157,26 +158,24 @@ const AdminAnalytics = () => {
   };
 
   const getTrendColor = (value) => {
-    if (value > 0) return "text-green-600";
-    if (value < 0) return "text-red-600";
-    return "text-gray-600";
+    if (value > 0) return 'text-green-600';
+    if (value < 0) return 'text-red-600';
+    return 'text-gray-600';
   };
 
   const metricOptions = [
-    { value: "views", label: "Page Views", icon: EyeIcon },
-    { value: "users", label: "Users", icon: UsersIcon },
-    { value: "posts", label: "Posts", icon: DocumentTextIcon },
-    { value: "engagement", label: "Engagement", icon: ChartBarIcon },
+    { value: 'views', label: 'Page Views', icon: EyeIcon },
+    { value: 'users', label: 'Users', icon: UsersIcon },
+    { value: 'posts', label: 'Posts', icon: DocumentTextIcon },
+    { value: 'engagement', label: 'Engagement', icon: ChartBarIcon }
   ];
 
-  if (!roleService.hasPermission(permissions, "analytics.view")) {
+  if (!roleService.hasPermission(permissions, 'analytics.view')) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <ChartBarIcon className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">
-            Access Denied
-          </h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">Access Denied</h3>
           <p className="mt-1 text-sm text-gray-500">
             You don't have permission to view analytics.
           </p>
@@ -246,15 +245,9 @@ const AdminAnalytics = () => {
                       <div className="text-lg font-medium text-gray-900">
                         {analytics.overview.totalViews.toLocaleString()}
                       </div>
-                      <div
-                        className={`ml-2 flex items-center text-sm ${getTrendColor(
-                          analytics.trends.viewsGrowth
-                        )}`}
-                      >
+                      <div className={`ml-2 flex items-center text-sm ${getTrendColor(analytics.trends.viewsGrowth)}`}>
                         {getTrendIcon(analytics.trends.viewsGrowth)}
-                        <span className="ml-1">
-                          {Math.abs(analytics.trends.viewsGrowth)}%
-                        </span>
+                        <span className="ml-1">{Math.abs(analytics.trends.viewsGrowth)}%</span>
                       </div>
                     </dd>
                   </dl>
@@ -278,15 +271,9 @@ const AdminAnalytics = () => {
                       <div className="text-lg font-medium text-gray-900">
                         {analytics.overview.totalUsers.toLocaleString()}
                       </div>
-                      <div
-                        className={`ml-2 flex items-center text-sm ${getTrendColor(
-                          analytics.trends.usersGrowth
-                        )}`}
-                      >
+                      <div className={`ml-2 flex items-center text-sm ${getTrendColor(analytics.trends.usersGrowth)}`}>
                         {getTrendIcon(analytics.trends.usersGrowth)}
-                        <span className="ml-1">
-                          {Math.abs(analytics.trends.usersGrowth)}%
-                        </span>
+                        <span className="ml-1">{Math.abs(analytics.trends.usersGrowth)}%</span>
                       </div>
                     </dd>
                   </dl>
@@ -310,15 +297,9 @@ const AdminAnalytics = () => {
                       <div className="text-lg font-medium text-gray-900">
                         {analytics.overview.totalPosts.toLocaleString()}
                       </div>
-                      <div
-                        className={`ml-2 flex items-center text-sm ${getTrendColor(
-                          analytics.trends.postsGrowth
-                        )}`}
-                      >
+                      <div className={`ml-2 flex items-center text-sm ${getTrendColor(analytics.trends.postsGrowth)}`}>
                         {getTrendIcon(analytics.trends.postsGrowth)}
-                        <span className="ml-1">
-                          {Math.abs(analytics.trends.postsGrowth)}%
-                        </span>
+                        <span className="ml-1">{Math.abs(analytics.trends.postsGrowth)}%</span>
                       </div>
                     </dd>
                   </dl>
@@ -342,15 +323,9 @@ const AdminAnalytics = () => {
                       <div className="text-lg font-medium text-gray-900">
                         {analytics.overview.engagementRate}%
                       </div>
-                      <div
-                        className={`ml-2 flex items-center text-sm ${getTrendColor(
-                          analytics.trends.engagementGrowth
-                        )}`}
-                      >
+                      <div className={`ml-2 flex items-center text-sm ${getTrendColor(analytics.trends.engagementGrowth)}`}>
                         {getTrendIcon(analytics.trends.engagementGrowth)}
-                        <span className="ml-1">
-                          {Math.abs(analytics.trends.engagementGrowth)}%
-                        </span>
+                        <span className="ml-1">{Math.abs(analytics.trends.engagementGrowth)}%</span>
                       </div>
                     </dd>
                   </dl>
@@ -365,15 +340,13 @@ const AdminAnalytics = () => {
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Trends Over Time
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900">Trends Over Time</h3>
                 <select
                   value={selectedMetric}
                   onChange={(e) => setSelectedMetric(e.target.value)}
                   className="text-sm border-gray-300 rounded-md"
                 >
-                  {metricOptions.map((option) => (
+                  {metricOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -385,26 +358,18 @@ const AdminAnalytics = () => {
               <div className="h-64 flex items-end justify-between space-x-2">
                 {analytics.timeSeriesData.slice(-14).map((data, index) => {
                   const value = data[selectedMetric];
-                  const maxValue = Math.max(
-                    ...analytics.timeSeriesData.map((d) => d[selectedMetric])
-                  );
+                  const maxValue = Math.max(...analytics.timeSeriesData.map(d => d[selectedMetric]));
                   const height = (value / maxValue) * 100;
-
+                  
                   return (
-                    <div
-                      key={index}
-                      className="flex flex-col items-center flex-1"
-                    >
-                      <div
+                    <div key={index} className="flex flex-col items-center flex-1">
+                      <div 
                         className="w-full bg-indigo-500 rounded-t-sm transition-all duration-300 hover:bg-indigo-600"
                         style={{ height: `${height}%` }}
                         title={`${value} ${selectedMetric}`}
                       ></div>
                       <div className="text-xs text-gray-500 mt-2 transform -rotate-45 origin-left">
-                        {new Date(data.date).toLocaleDateString("en", {
-                          month: "short",
-                          day: "numeric",
-                        })}
+                        {new Date(data.date).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
                       </div>
                     </div>
                   );
@@ -416,36 +381,25 @@ const AdminAnalytics = () => {
           {/* Role Distribution */}
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
-                User Role Distribution
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900">User Role Distribution</h3>
             </div>
             <div className="p-6">
               <div className="space-y-4">
                 {analytics.roleDistribution.map((role, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
+                  <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className="w-4 h-4 rounded-full bg-indigo-500 mr-3"></div>
-                      <span className="text-sm font-medium text-gray-900">
-                        {role.role}
-                      </span>
+                      <span className="text-sm font-medium text-gray-900">{role.role}</span>
                     </div>
                     <div className="flex items-center space-x-4">
-                      <span className="text-sm text-gray-500">
-                        {role.count} users
-                      </span>
+                      <span className="text-sm text-gray-500">{role.count} users</span>
                       <div className="w-20 bg-gray-200 rounded-full h-2">
-                        <div
+                        <div 
                           className="bg-indigo-600 h-2 rounded-full"
                           style={{ width: `${role.percentage}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm font-medium text-gray-900 w-8">
-                        {role.percentage}%
-                      </span>
+                      <span className="text-sm font-medium text-gray-900 w-8">{role.percentage}%</span>
                     </div>
                   </div>
                 ))}
@@ -458,9 +412,7 @@ const AdminAnalytics = () => {
           {/* Top Content */}
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
-                Top Performing Content
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900">Top Performing Content</h3>
             </div>
             <div className="divide-y divide-gray-200">
               {analytics.topContent.slice(0, 8).map((content, index) => (
@@ -475,7 +427,7 @@ const AdminAnalytics = () => {
                       </p>
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
-                      {/* <TrendingUpIcon className="h-4 w-4 mr-1 text-green-500" /> */}
+                      <ArrowTrendingUpIcon className="h-4 w-4 mr-1 text-green-500" />
                       #{index + 1}
                     </div>
                   </div>
@@ -487,22 +439,15 @@ const AdminAnalytics = () => {
           {/* User Activity */}
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
-                User Activity (Last 7 Days)
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900">User Activity (Last 7 Days)</h3>
             </div>
             <div className="p-6">
               <div className="space-y-4">
                 {analytics.userActivity.map((activity, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
+                  <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center">
                       <CalendarIcon className="h-5 w-5 text-gray-400 mr-3" />
-                      <span className="text-sm font-medium text-gray-900">
-                        {activity.date}
-                      </span>
+                      <span className="text-sm font-medium text-gray-900">{activity.date}</span>
                     </div>
                     <div className="flex items-center space-x-6 text-sm text-gray-500">
                       <div className="flex items-center">
@@ -527,10 +472,7 @@ const AdminAnalytics = () => {
 
         {/* Footer */}
         <div className="mt-8 text-center text-sm text-gray-500">
-          <p>
-            Analytics data updated in real-time • Last refresh:{" "}
-            {new Date().toLocaleString()}
-          </p>
+          <p>Analytics data updated in real-time • Last refresh: {new Date().toLocaleString()}</p>
         </div>
       </div>
     </div>
