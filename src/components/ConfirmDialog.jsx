@@ -1,6 +1,6 @@
 import React from "react";
 
-export const ConfirmDialog = ({
+const ConfirmDialog = ({
   isOpen,
   onClose,
   onConfirm,
@@ -43,3 +43,5 @@ export const ConfirmDialog = ({
     </div>
   );
 };
+
+export default ConfirmDialog;
