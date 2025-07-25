@@ -11,7 +11,6 @@ import {
   EyeIcon,
   ClockIcon,
   TrendingUpIcon,
-  TrendingDownIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
   XCircleIcon,
