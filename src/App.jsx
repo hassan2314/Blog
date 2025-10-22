@@ -16,10 +16,14 @@ function App() {
         setLoading(true);
         setError(null);
 
-        const userData = await authService.getCurrentUser();
+        const userWithRole = await authService.getCurrentUserWithRole();
 
-        if (userData) {
-          dispatch(login({ userData }));
+        if (userWithRole) {
+          dispatch(login({
+            userData: userWithRole.userData,
+            userRole: userWithRole.userRole,
+            permissions: userWithRole.permissions
+          }));
         } else {
           dispatch(logout());
         }

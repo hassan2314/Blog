@@ -12,12 +12,17 @@ const AllPosts = () => {
     const fetchPosts = async () => {
       try {
         const posts = await appwriteServices.getPosts([]);
-        if (posts) {
-          setPosts(posts.documents);
+        if (posts && posts.documents) {
+          // Filter out any undefined or invalid posts
+          const validPosts = posts.documents.filter(post => post && post.$id && post.title);
+          setPosts(validPosts);
+        } else {
+          setPosts([]);
         }
-      } catch (error) {
-        console.error("Failed to fetch posts:", error);
-        setError("Failed to load posts. Please try again later.");
+              } catch (error) {
+          console.error("Failed to fetch posts:", error);
+          setError("Failed to load posts. Please try again later.");
+          setPosts([]); // Ensure posts is always an array
       } finally {
         setLoading(false);
       }
@@ -61,9 +66,13 @@ const AllPosts = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post) => (
-              <PostCard key={post.$id} post={post} />
-            ))}
+            {posts.map((post) => {
+              // Additional safety check before rendering
+              if (!post || !post.$id) {
+                return null;
+              }
+              return <PostCard key={post.$id} post={post} />;
+            })}
           </div>
         )}
       </Container>
