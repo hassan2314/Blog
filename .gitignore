@@ -21,3 +21,8 @@ node_modules
 *.njsproj
 *.sln
 *.sw?
+
+# env files
+.env
+.env.*
+!.env.example
